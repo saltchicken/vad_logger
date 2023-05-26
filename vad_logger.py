@@ -8,8 +8,7 @@ import tempfile
 
 class VAD_Logger():
 
-    def __init__(self, output_path, channels=1, rate=16000):
-        self.output_path = output_path
+    def __init__(self, channels=1, rate=16000):
         self.channels = channels
         self.rate = rate
         self.format = pyaudio.paInt16
