@@ -3,6 +3,8 @@ import webrtcvad
 import wave
 from datetime import datetime
 from collections import deque
+import tempfile
+
 
 class VAD_Logger():
 
@@ -57,15 +59,15 @@ class VAD_Logger():
                     self.frames.append(audio_data)
                 else:
                     if len(self.frames) > 5:
-                        filename = ''.join([self.output_path, '/clip-', datetime.utcnow().strftime('%Y%m%d%H%M%S'), '.wav'])
-                        wf = wave.open(filename, "wb")
+                        temp_file = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+                        wf = wave.open(temp_file.name, "wb")
                         wf.setnchannels(self.channels)
                         wf.setsampwidth(self._pa.get_sample_size(self.format))
                         wf.setframerate(self.rate)
                         wf.writeframes(b''.join(self.frames))
                         wf.close()
                         self.frames = []
-                        return filename
+                        return temp_file.name
                     else:
                         self.frames = []
                         
