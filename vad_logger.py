@@ -1,10 +1,6 @@
 import pyaudio
 import webrtcvad
-import wave
-from datetime import datetime
 from collections import deque
-import tempfile
-
 
 class VAD_Logger():
 
@@ -30,10 +26,10 @@ class VAD_Logger():
         for _ in range(5):
             audio_data = self._stream.read(self.chunk_size)
             is_speech = self.vad.is_speech(audio_data, self.rate)
-            # print(is_speech)
 
     def start_recording(self):
         print('Begin recording...')
+        self.frames = []
         try:
             while True:
                 audio_data = self._stream.read(self.chunk_size)
@@ -58,15 +54,8 @@ class VAD_Logger():
                     self.frames.append(audio_data)
                 else:
                     if len(self.frames) > 5:
-                        temp_file = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
-                        wf = wave.open(temp_file.name, "wb")
-                        wf.setnchannels(self.channels)
-                        wf.setsampwidth(self._pa.get_sample_size(self.format))
-                        wf.setframerate(self.rate)
-                        wf.writeframes(b''.join(self.frames))
-                        wf.close()
-                        self.frames = []
-                        return temp_file.name
+                        print('Recording done...')
+                        return b''.join(self.frames)
                     else:
                         self.frames = []
                         
