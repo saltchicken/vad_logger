@@ -40,7 +40,7 @@ class VAD_Logger():
             is_speech = self.vad.is_speech(audio_data, self.rate)
 
     def start_recording(self):
-        logging.debug('Begin recording...')
+        logger.debug('Begin recording...')
         self.frames = []
         try:
             while True:
@@ -69,11 +69,11 @@ class VAD_Logger():
                     self.frames.append(audio_data)
                 else:
                     if len(self.frames) > 5:
-                        logging.debug('Recording done...')
+                        logger.debug('Recording done...')
                         return b''.join(self.frames)
                     else:
                         self.frames = []
                         
         except KeyboardInterrupt as e:
-            logging.debug('Terminating recording...', end='')
+            logger.debug('Terminating recording...', end='')
             return None
