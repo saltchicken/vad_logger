@@ -2,6 +2,15 @@ import pyaudio
 import webrtcvad
 from collections import deque
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 class VAD_Logger():
 
     def __init__(self, channels=1, rate=16000):
@@ -31,7 +40,7 @@ class VAD_Logger():
             is_speech = self.vad.is_speech(audio_data, self.rate)
 
     def start_recording(self):
-        print('Begin recording...')
+        logging.debug('Begin recording...')
         self.frames = []
         try:
             while True:
@@ -60,11 +69,11 @@ class VAD_Logger():
                     self.frames.append(audio_data)
                 else:
                     if len(self.frames) > 5:
-                        print('Recording done...')
+                        logging.debug('Recording done...')
                         return b''.join(self.frames)
                     else:
                         self.frames = []
                         
         except KeyboardInterrupt as e:
-            print('Terminating recording...', end='')
+            logging.debug('Terminating recording...', end='')
             return None
