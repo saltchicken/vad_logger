@@ -21,8 +21,11 @@ class VAD_Logger():
         self.is_speaking = False
         self.not_speaking_frames_count = 0
         self.speaking_frames_count = 0
+        # TODO: Why is self.proceed here?
         self.proceed = True
+        self.stop_condition = False
         self.buffer = deque('', 5)
+        # TODO: Investigate why this is necessary. Seems to clean initial reads
         for _ in range(5):
             audio_data = self._stream.read(self.chunk_size)
             is_speech = self.vad.is_speech(audio_data, self.rate)
@@ -32,6 +35,9 @@ class VAD_Logger():
         self.frames = []
         try:
             while True:
+                if self.stop_condition:
+                    self.frames = []
+                    return None
                 audio_data = self._stream.read(self.chunk_size)
                 self.buffer.append(audio_data)
                 is_speech = self.vad.is_speech(audio_data, self.rate)
@@ -46,7 +52,7 @@ class VAD_Logger():
                     self.is_speaking = True
                     if len(self.frames) == 0:
                         self.frames = self.frames + list(self.buffer)
-                
+                # TODO: This is a magic number.
                 if self.not_speaking_frames_count > 5:
                     self.is_speaking = False
 
