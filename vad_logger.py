@@ -30,8 +30,6 @@ class VAD_Logger():
         self.is_speaking = False
         self.not_speaking_frames_count = 0
         self.speaking_frames_count = 0
-        # TODO: Why is self.proceed here?
-        self.proceed = True
         self.stop_condition = False
         self.buffer = deque('', 5)
         # TODO: Investigate why this is necessary. Seems to clean initial reads
